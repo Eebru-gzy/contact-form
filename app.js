@@ -7,8 +7,12 @@ const nodemailer = require('nodemailer');
 const app = express();
 
 // View engine setup
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
+app.engine('hbs', exphbs({
+  defaultLayout: 'main',
+  extname: '.hbs'
+}));
+
+app.set('view engine', 'hbs');
 
 // Static folder
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -18,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.render('contact');
+  res.render('home', {layout: false});
 });
 
 app.post('/send', (req, res) => {
@@ -37,12 +41,12 @@ app.post('/send', (req, res) => {
 
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    host: 'mail.YOURDOMAIN.com',
-    port: 587,
+    host: 'mail.interad.online',
+    port: 26,
     secure: false, // true for 465, false for other ports
     auth: {
-        user: 'YOUREMAIL', // generated ethereal user
-        pass: 'YOURPASSWORD'  // generated ethereal password
+        user: 'info@interad.online', // generated ethereal user
+        pass: 'T^C,rf@X~OHW'  // generated ethereal password
     },
     tls:{
       rejectUnauthorized:false
@@ -51,9 +55,9 @@ app.post('/send', (req, res) => {
 
   // setup email data with unicode symbols
   let mailOptions = {
-      from: '"Nodemailer Contact" <your@email.com>', // sender address
-      to: 'RECEIVEREMAILS', // list of receivers
-      subject: 'Node Contact Request', // Subject line
+      from: '"Nodemailer Contact" <info@interad.online>', // sender address
+      to: 'ibrahim.alao@itscopesolutions.com', // list of receivers
+      subject: 'Testing Node mailer Node Contact Request', // Subject line
       text: 'Hello world?', // plain text body
       html: output // html body
   };
@@ -66,8 +70,8 @@ app.post('/send', (req, res) => {
       console.log('Message sent: %s', info.messageId);   
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
-      res.render('contact', {msg:'Email has been sent'});
+      res.render('home', {msg:'Email has been sent'});
   });
-  });
+});
 
 app.listen(3000, () => console.log('Server started...'));
